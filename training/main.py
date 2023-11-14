@@ -54,7 +54,7 @@ def parse_args():
     )
     parser.add_argument('--dataset_names',
                         nargs='*',
-                        default=["sparkles_dialogue"],# "llava", "llava_dial", "otter_mimicit_cgd", "otter_mimicit_sd", "otter_mimicit_sn", "otter_mimicit_tvc", "otter_mimicit_vst", "llava_otter_blend", "sparkles_dialogue"],
+                        default=["haoyiisheng"],# "llava", "llava_dial", "otter_mimicit_cgd", "otter_mimicit_sd", "otter_mimicit_sn", "otter_mimicit_tvc", "otter_mimicit_vst", "llava_otter_blend", "sparkles_dialogue"],
                         help='Name of training dataset(s) to be used. Accepted format:'
                         '1) a single dataset name, 2) multiple dataset names in the'
                         'form: dataset1 dataset2 ...')
@@ -167,7 +167,7 @@ def parse_args():
         "Path to pretrained model or model identifier from huggingface.co/models.",
         # required=True,
     )
-    parser.add_argument("--vision_model_name_or_path", default="openai/clip-vit-large-patch14", type=str)
+    parser.add_argument("--vision_model_name_or_path", default="openai/clip-vit-large-patch14", type=str) # EVA02-CLIP-L-14 eva02_large_patch14_clip_224 openai/clip-vit-large-patch14
     parser.add_argument(
         "--enable_mmca_attention",
         action='store_true',
@@ -411,6 +411,7 @@ def main():
                 input_labels=labels,
                 image_num=batch["image_num"],
             )[0]
+            # print_rank_0(f"Epoch {epoch+1}, the step_loss: {loss}", args.global_rank)
             acc_loss += loss.detach().clone()
             model.backward(loss)
             model.step()

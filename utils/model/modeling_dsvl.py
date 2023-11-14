@@ -18,6 +18,8 @@ from torch.utils.data import DataLoader
 from transformers.deepspeed import HfDeepSpeedConfig
 import numpy as np
 from .vis_proj import VisProjection_vit, VisProjection_perceiver
+import timm
+from .third_party_model.eva_clip import create_model_and_transforms
 
 def get_name(huggingface_path):
     if 'opt' in huggingface_path.lower():
@@ -56,13 +58,20 @@ def create_dsvl_model_and_transforms(
         ) 
         vis_encoder.load_state_dict(torch.load(os.path.join(args.vision_model_name_or_path, 'pytorch_model.bin'), map_location='cpu'), strict=True)
         vis_config.hidden_size = 4096 # we need to change the hidden size to 4096
-    elif 'clip' in args.vision_model_name_or_path.lower():
+        image_processor = CLIPImageProcessor.from_pretrained(args.vision_model_name_or_path)
+    elif 'clip-vit' in args.vision_model_name_or_path.lower():
         vis_encoder = CLIPVisionModel.from_pretrained(args.vision_model_name_or_path) 
         vis_config = vis_encoder.config
+        image_processor = CLIPImageProcessor.from_pretrained(args.vision_model_name_or_path)
+    elif 'eva02' in args.vision_model_name_or_path.lower():
+        # vis_encoder = timm.create_model(args.vision_model_name_or_path, pretrained=True, num_classes=0)
+        # vis_config = vis_encoder.pretrained_cfg
+        # vis_config["hidden_size"] = vis_encoder.num_features
+        vis_encoder, image_processor, _ = create_model_and_transforms(args.vision_model_name_or_path, 'eva_clip', force_custom_clip=True)
+        vis_encoder = vis_encoder.visual
+        vis_config = {"hidden_size": vis_encoder.num_features}
     else:
         raise ValueError("We currently only support qwen's modifed clip and other clip models")
-    
-    image_processor = CLIPImageProcessor.from_pretrained(args.vision_model_name_or_path)
     
     tokenizer = add_special_token(text_tokenizer)  
     tokenizer.pad_token = tokenizer.eos_token
@@ -199,8 +208,9 @@ class DeepSpeedViLModel(nn.Module):
             output =  VisProjection_vit(vis_config, lang_dim=lang_dim)
             return output 
         elif self.args.vis_proj == 'baseline':
+            hidden_size = vis_config['hidden_size'] if isinstance(vis_config, dict) else vis_config.hidden_size
             return nn.Sequential( 
-                            nn.Linear(vis_config.hidden_size, lang_dim), # an example implementation
+                            nn.Linear(hidden_size, lang_dim), # an example implementation
                             nn.LayerNorm(lang_dim, eps=1e-12))
         elif self.args.vis_proj == 'perceiver':
             return VisProjection_perceiver(vis_config, lang_dim=lang_dim)
@@ -246,7 +256,7 @@ class DeepSpeedViLModel(nn.Module):
                 lang_full = torch.cat((lang_pre_img_embed, img_i, lang_post_img_embed), dim=0)
                 # label the position of all images as 2 instead of 1
     
-                attention_mask_full = torch.cat( (attention_mask_pre_img, 2 * torch.ones_like(img_i[:, 0]), attention_mask_post_img), dim=0)
+                attention_mask_full = torch.cat( (attention_mask_pre_img, 1 * torch.ones_like(img_i[:, 0]), attention_mask_post_img), dim=0)
 
                 input_labels_full = torch.cat((input_labels_pre_img.long(), DST.DEFAULT_LABEL_PADDING_NUM * torch.ones_like(img_i[:, 0], dtype=torch.long), input_labels_post_img),   dim=0)
 

@@ -15,17 +15,17 @@ lr=1e-3
 
 DATA_PATH=/raid/youbao/data
 # DATA="llava llava_dial otter_mimicit_cgd otter_mimicit_sd otter_mimicit_sn otter_mimicit_tvc otter_mimicit_vst llava_otter_blend sparkles_dialogue"
-DATA="llava llava_dial otter_mimicit_cgd otter_mimicit_vst llava_otter_blend sparkles_dialogue"
+DATA="haoyisheng"
 DATA_SAMPLE="all"
 # IMAGE_PER_SAMPLE="3 2 1 1 1 1 1 1 1"
-IMAGE_PER_SAMPLE="3 2 1 1 1 1"
+IMAGE_PER_SAMPLE="1"
 
 DATA_CONCATE="${DATA// /_}"
 DATA_SAMPLE_CONCATE="${DATA_SAMPLE// /_}"
 IMAGE_CONCATE="${IMAGE_PER_SAMPLE// /_}"
 # 
 
-OUTPUT_Base=./output/
+OUTPUT_Base=./output1/
 
 OUTPUT_Dir=Epoch${EPOCH}_LR${lr}_data_${DATA_CONCATE}_${DATA_SAMPLE_CONCATE}_${IMAGE_CONCATE}
 
@@ -46,4 +46,5 @@ deepspeed main.py --max_seq_len 4096 \
     --vision_model_name_or_path ${VISION_MODEL} \
     --gradient_checkpointing --vis_proj baseline \
     --gradient_accumulation_steps 1  --zero_stage $ZERO_STAGE --learning_rate $lr --num_warmup_steps 0.1 \
-    --per_device_train_batch_size 1 --per_device_eval_batch_size 2 --deepspeed --output_dir $OUTPUT  --num_train_epochs ${EPOCH} --enable_mmca_attention --enable_tensorboard
+    --per_device_train_batch_size 1 --per_device_eval_batch_size 2 --deepspeed --output_dir $OUTPUT  --num_train_epochs ${EPOCH} --enable_mmca_attention --enable_tensorboard \
+    # &> $OUTPUT/training.log

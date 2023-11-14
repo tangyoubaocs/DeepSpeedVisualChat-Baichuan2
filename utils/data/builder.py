@@ -17,6 +17,7 @@ from .otter_mimicit_tvc_dataset import OtterMimicitTvcDataset  # noqa: F401
 from .otter_mimicit_vst_dataset import OtterMimicitVstDataset  # noqa: F401
 from .sparkles_dialogue_dataset import SparklesDialogueDataset  # noqa: F401
 from .vqa_dataset import ConcatDataset  # noqa: F401
+from .haoyisheng_dataset import HaoyishengDataset
 from utils.utils import print_rank_0
 
 
@@ -120,6 +121,13 @@ def build_dataset(data_path, data_debug_path, dataset_name, dataset_sample,
         )
     elif dataset_name == "sparkles_dialogue":
         dataset = SparklesDialogueDataset(
+            data_path,
+            data_debug_path,
+            dataset_concatenate_samples,
+            **kwargs,
+        )
+    elif dataset_name == "haoyisheng":
+        dataset = HaoyishengDataset(
             data_path,
             data_debug_path,
             dataset_concatenate_samples,
