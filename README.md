@@ -55,6 +55,8 @@ Thanks to the scalable, efficient, and user-friendly nature of the DeepSpeed eco
 
 
 ```bash
+git clone https://github.com/tangyoubaocs/DeepSpeedVisualChat-Baichuan2.git
+cd DeepSpeedVisualChat-Baichuan2
 pip install -r requirements.txt
 ```
 
