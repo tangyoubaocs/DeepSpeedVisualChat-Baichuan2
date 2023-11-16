@@ -62,6 +62,14 @@ pip install -r requirements.txt
 
 ## <font color=red> Extra modifications for using Baichuan2 as LLM: 
 
+Install the transformers package using the following commands:
+
+```bash
+git clone https://tangyoubaocs/visualchat_transformers.git
+cd visualchat_transformers
+pip install -e .
+```
+
 ```bash
 pip install bitsandbytes
 ```
