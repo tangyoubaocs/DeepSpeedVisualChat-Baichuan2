@@ -82,13 +82,13 @@ cd bitsandbytes
 CUDA_VERSION=116 make cuda11x_nomatmul
 python setup.py install
 ```
-
+<!--
 Since the ```lm_head``` type of LLAMA2 and Baichuan2 are different (```nn.Linear``` vs ```NormHead```), we may need to modify the ```modeling_utils.py``` file in the package of ```transformers``` to avoid some errors. The modified places are indicated with the red boxes in the following figure:
 <div align="center">
 
 <img src="assets/modeling_utils_changes.jpg" alt="DeepSpeed-VisualChat Banner!"/>
 Figure 2. The modifications are shown in the red boxes.
-
+-->
 </div>
 </font>
 
