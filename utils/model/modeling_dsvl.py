@@ -18,8 +18,8 @@ from torch.utils.data import DataLoader
 from transformers.deepspeed import HfDeepSpeedConfig
 import numpy as np
 from .vis_proj import VisProjection_vit, VisProjection_perceiver
-import timm
-from .third_party_model.eva_clip import create_model_and_transforms
+# import timm
+# from .third_party_model.eva_clip import create_model_and_transforms
 
 def get_name(huggingface_path):
     if 'opt' in huggingface_path.lower():
@@ -63,13 +63,13 @@ def create_dsvl_model_and_transforms(
         vis_encoder = CLIPVisionModel.from_pretrained(args.vision_model_name_or_path) 
         vis_config = vis_encoder.config
         image_processor = CLIPImageProcessor.from_pretrained(args.vision_model_name_or_path)
-    elif 'eva02' in args.vision_model_name_or_path.lower():
-        # vis_encoder = timm.create_model(args.vision_model_name_or_path, pretrained=True, num_classes=0)
-        # vis_config = vis_encoder.pretrained_cfg
-        # vis_config["hidden_size"] = vis_encoder.num_features
-        vis_encoder, image_processor, _ = create_model_and_transforms(args.vision_model_name_or_path, 'eva_clip', force_custom_clip=True)
-        vis_encoder = vis_encoder.visual
-        vis_config = {"hidden_size": vis_encoder.num_features}
+    # elif 'eva02' in args.vision_model_name_or_path.lower():
+    #     # vis_encoder = timm.create_model(args.vision_model_name_or_path, pretrained=True, num_classes=0)
+    #     # vis_config = vis_encoder.pretrained_cfg
+    #     # vis_config["hidden_size"] = vis_encoder.num_features
+    #     vis_encoder, image_processor, _ = create_model_and_transforms(args.vision_model_name_or_path, 'eva_clip', force_custom_clip=True)
+    #     vis_encoder = vis_encoder.visual
+    #     vis_config = {"hidden_size": vis_encoder.num_features}
     else:
         raise ValueError("We currently only support qwen's modifed clip and other clip models")
     
