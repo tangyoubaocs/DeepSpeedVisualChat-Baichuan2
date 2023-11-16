@@ -55,8 +55,6 @@ Thanks to the scalable, efficient, and user-friendly nature of the DeepSpeed eco
 
 
 ```bash
-git clone https://github.com/microsoft/DeepSpeedExamples.git
-cd DeepSpeedExamples/applications/DeepSpeed-VisualChat/
 pip install -r requirements.txt
 ```
 
