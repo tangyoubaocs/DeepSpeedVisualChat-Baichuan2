@@ -70,6 +70,8 @@ cd visualchat_transformers
 pip install -e .
 ```
 
+Install the bitsandbytes package:
+
 ```bash
 pip install bitsandbytes
 ```
